@@ -32,21 +32,32 @@ export class PaymentService {
   payments$ = this.paymentsSubject.asObservable();
 
   constructor(private paymentGatewayService: PaymentGatewayService) {
-    // Load payments from localStorage if available
-    const savedPayments = localStorage.getItem('payments');
-    if (savedPayments) {
-      try {
-        const parsedPayments = JSON.parse(savedPayments);
-        // Convert string dates back to Date objects
-        const payments = parsedPayments.map((payment: any) => ({
-          ...payment,
-          date: new Date(payment.date)
-        }));
-        this.paymentsSubject.next(payments);
-      } catch (error) {
-        console.error('Error parsing saved payments', error);
-        this.paymentsSubject.next([]);
+    // Load payments from localStorage if available and if we're in a browser environment
+    if (this.isLocalStorageAvailable()) {
+      const savedPayments = localStorage.getItem('payments');
+      if (savedPayments) {
+        try {
+          const parsedPayments = JSON.parse(savedPayments);
+          // Convert string dates back to Date objects
+          const payments = parsedPayments.map((payment: any) => ({
+            ...payment,
+            date: new Date(payment.date)
+          }));
+          this.paymentsSubject.next(payments);
+        } catch (error) {
+          console.error('Error parsing saved payments', error);
+          this.paymentsSubject.next([]);
+        }
       }
+    }
+  }
+
+  // Helper method to check if localStorage is available
+  private isLocalStorageAvailable(): boolean {
+    try {
+      return typeof window !== 'undefined' && window.localStorage !== undefined;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -82,10 +93,12 @@ export class PaymentService {
   }
 
   private savePaymentsToLocalStorage(payments: Payment[]): void {
-    try {
-      localStorage.setItem('payments', JSON.stringify(payments));
-    } catch (error) {
-      console.error('Error saving payments to localStorage', error);
+    if (this.isLocalStorageAvailable()) {
+      try {
+        localStorage.setItem('payments', JSON.stringify(payments));
+      } catch (error) {
+        console.error('Error saving payments to localStorage', error);
+      }
     }
   }
 
