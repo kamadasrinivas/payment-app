@@ -62,6 +62,26 @@
       </div>
     </div>
 
+    <!-- Export Controls -->
+    <div class="export-controls" *ngIf="payments.length > 0">
+      <button class="export-button" (click)="exportAsPDF(false)" [disabled]="isExporting">
+        <i class="export-icon">📄</i>
+        <span *ngIf="!isExporting">Export Current Page as PDF</span>
+        <span *ngIf="isExporting">Generating PDF...</span>
+      </button>
+      <button class="export-button" (click)="exportAsPDF(true)" [disabled]="isExporting">
+        <i class="export-icon">📄</i>
+        <span *ngIf="!isExporting">Export All Payments as PDF</span>
+        <span *ngIf="isExporting">Generating PDF...</span>
+      </button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="export-loading" *ngIf="isExporting">
+      <div class="spinner"></div>
+      <p>Generating PDF, please wait...</p>
+    </div>
+
     <!-- Pagination Controls -->
     <div class="pagination-controls">
       <div class="pagination-info">
