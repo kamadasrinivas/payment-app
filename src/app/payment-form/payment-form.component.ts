@@ -57,4 +57,54 @@ export class PaymentFormComponent implements OnInit {
       }
     });
   }
+
+  onCardNumberInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    // Remove any non-digit characters
+    const filteredValue = value.replace(/\D/g, '');
+
+    // Only update if the value has changed (to avoid cursor position issues)
+    if (value !== filteredValue) {
+      this.paymentForm.get('cardNumber')?.setValue(filteredValue);
+    }
+  }
+
+  onExpiryDateInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+
+    // Allow only digits and a single slash
+    let filteredValue = value.replace(/[^\d\/]/g, '');
+
+    // Ensure proper MM/YY format
+    if (filteredValue.length > 0) {
+      // Extract digits only
+      const digits = filteredValue.replace(/\D/g, '');
+
+      // Format as MM/YY
+      if (digits.length <= 2) {
+        filteredValue = digits;
+      } else {
+        filteredValue = digits.substring(0, 2) + '/' + digits.substring(2, 4);
+      }
+    }
+
+    // Only update if the value has changed
+    if (value !== filteredValue) {
+      this.paymentForm.get('expiryDate')?.setValue(filteredValue);
+    }
+  }
+
+  onCvvInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    // Remove any non-digit characters
+    const filteredValue = value.replace(/\D/g, '');
+
+    // Only update if the value has changed
+    if (value !== filteredValue) {
+      this.paymentForm.get('cvv')?.setValue(filteredValue);
+    }
+  }
 }

@@ -12,26 +12,26 @@
 
     <div class="form-group">
       <label for="cardNumber">Card Number</label>
-      <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456">
+      <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16" pattern="\d*" (input)="onCardNumberInput($event)">
       <div *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched" class="error-message">
-        Valid card number is required
+        Valid card number is required (16 digits)
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group half-width">
         <label for="expiryDate">Expiry Date</label>
-        <input type="text" id="expiryDate" formControlName="expiryDate" placeholder="MM/YY">
+        <input type="text" id="expiryDate" formControlName="expiryDate" placeholder="MM/YY" maxlength="5" pattern="\d{2}\/\d{2}" (input)="onExpiryDateInput($event)">
         <div *ngIf="paymentForm.get('expiryDate')?.invalid && paymentForm.get('expiryDate')?.touched" class="error-message">
-          Valid expiry date is required
+          Valid expiry date is required (MM/YY format)
         </div>
       </div>
 
       <div class="form-group half-width">
         <label for="cvv">CVV</label>
-        <input type="text" id="cvv" formControlName="cvv" placeholder="123">
+        <input type="text" id="cvv" formControlName="cvv" placeholder="123" maxlength="4" pattern="\d*" (input)="onCvvInput($event)">
         <div *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched" class="error-message">
-          Valid CVV is required
+          Valid CVV is required (3-4 digits)
         </div>
       </div>
     </div>
