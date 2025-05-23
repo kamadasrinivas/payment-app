@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
-import { PaymentService, Payment } from '../payment.service';
-import { PaymentResponse } from '../payment-gateway.service';
+import { PaymentService } from '../payment.service';
+import { Payment, PaymentResponse } from '../models/payment.model';
 
 @Component({
   selector: 'app-payment-confirmation',

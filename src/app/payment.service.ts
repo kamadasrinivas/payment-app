@@ -1,28 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { PaymentGatewayService, PaymentResponse } from './payment-gateway.service';
-
-export interface Payment {
-  id: string;
-  paymentMethod: string; // 'creditCard', 'paypal', 'razorpay', 'netbanking'
-  cardholderName?: string;
-  cardNumber?: string;
-  expiryDate?: string;
-  cvv?: string;
-  // PayPal specific fields
-  paypalEmail?: string;
-  // RazorPay specific fields
-  razorpayId?: string;
-  // NetBanking specific fields
-  bankName?: string;
-  accountNumber?: string;
-  // Common fields
-  amount: number;
-  description: string;
-  date: Date;
-  transactionId?: string;
-}
+import { PaymentGatewayService } from './payment-gateway.service';
+import { Payment, PaymentResponse } from './models/payment.model';
 
 @Injectable({
   providedIn: 'root'

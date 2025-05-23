@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PaymentService } from '../payment.service';
 import { finalize } from 'rxjs/operators';
-import { PaymentResponse } from '../payment-gateway.service';
+import { Payment, PaymentResponse } from '../models/payment.model';
 
 @Component({
   selector: 'app-payment-form',

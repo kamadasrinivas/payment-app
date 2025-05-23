@@ -6,57 +6,109 @@
     <button routerLink="/payment-form" class="make-payment-button">Make a Payment</button>
   </div>
 
-  <div *ngIf="payments.length > 0" class="payments-list">
-    <div class="payment-card" *ngFor="let payment of payments">
-      <div class="payment-header">
-        <div class="payment-date">{{ payment.date | date:'medium' }}</div>
-        <div class="payment-amount">${{ payment.amount | number:'1.2-2' }}</div>
+  <div *ngIf="payments.length > 0">
+    <div class="payments-list">
+      <div class="payment-card" *ngFor="let payment of paginatedPayments">
+        <div class="payment-header">
+          <div class="payment-date">{{ payment.date | date:'medium' }}</div>
+          <div class="payment-amount">${{ payment.amount | number:'1.2-2' }}</div>
+        </div>
+
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="detail-label">Payment Method:</span>
+            <span class="detail-value">{{ getPaymentMethodName(payment.paymentMethod) }}</span>
+          </div>
+
+          <!-- Credit Card Details -->
+          <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
+            <span class="detail-label">Cardholder:</span>
+            <span class="detail-value">{{ payment.cardholderName }}</span>
+          </div>
+
+          <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
+            <span class="detail-label">Card Number:</span>
+            <span class="detail-value">{{ maskCardNumber(payment.cardNumber) }}</span>
+          </div>
+
+          <!-- PayPal Details -->
+          <div *ngIf="payment.paymentMethod === 'paypal'" class="detail-row">
+            <span class="detail-label">PayPal Email:</span>
+            <span class="detail-value">{{ payment.paypalEmail }}</span>
+          </div>
+
+          <!-- RazorPay Details -->
+          <div *ngIf="payment.paymentMethod === 'razorpay'" class="detail-row">
+            <span class="detail-label">RazorPay ID:</span>
+            <span class="detail-value">{{ payment.razorpayId }}</span>
+          </div>
+
+          <!-- Net Banking Details -->
+          <div *ngIf="payment.paymentMethod === 'netbanking'" class="detail-row">
+            <span class="detail-label">Bank:</span>
+            <span class="detail-value">{{ payment.bankName }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="detail-label">Description:</span>
+            <span class="detail-value">{{ payment.description || 'No description provided' }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="detail-label">Transaction ID:</span>
+            <span class="detail-value">{{ payment.transactionId || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        <span *ngIf="payments.length > 0">
+          Page {{ currentPage }} of {{ totalPages }} | Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ currentPage === totalPages ? payments.length : currentPage * pageSize }} of {{ payments.length }} payments
+        </span>
+        <span *ngIf="payments.length === 0">
+          No payments to display
+        </span>
       </div>
 
-      <div class="payment-details">
-        <div class="detail-row">
-          <span class="detail-label">Payment Method:</span>
-          <span class="detail-value">{{ getPaymentMethodName(payment.paymentMethod) }}</span>
+      <div class="pagination-buttons" *ngIf="payments.length > 0">
+        <button
+          class="pagination-button"
+          [disabled]="currentPage === 1"
+          (click)="previousPage()"
+          [class.disabled]="currentPage === 1"
+        >
+          Previous
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of pageNumbers"
+            class="page-number"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
         </div>
 
-        <!-- Credit Card Details -->
-        <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
-          <span class="detail-label">Cardholder:</span>
-          <span class="detail-value">{{ payment.cardholderName }}</span>
-        </div>
+        <button
+          class="pagination-button"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()"
+          [class.disabled]="currentPage === totalPages"
+        >
+          Next
+        </button>
+      </div>
 
-        <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
-          <span class="detail-label">Card Number:</span>
-          <span class="detail-value">{{ maskCardNumber(payment.cardNumber) }}</span>
-        </div>
-
-        <!-- PayPal Details -->
-        <div *ngIf="payment.paymentMethod === 'paypal'" class="detail-row">
-          <span class="detail-label">PayPal Email:</span>
-          <span class="detail-value">{{ payment.paypalEmail }}</span>
-        </div>
-
-        <!-- RazorPay Details -->
-        <div *ngIf="payment.paymentMethod === 'razorpay'" class="detail-row">
-          <span class="detail-label">RazorPay ID:</span>
-          <span class="detail-value">{{ payment.razorpayId }}</span>
-        </div>
-
-        <!-- Net Banking Details -->
-        <div *ngIf="payment.paymentMethod === 'netbanking'" class="detail-row">
-          <span class="detail-label">Bank:</span>
-          <span class="detail-value">{{ payment.bankName }}</span>
-        </div>
-
-        <div class="detail-row">
-          <span class="detail-label">Description:</span>
-          <span class="detail-value">{{ payment.description || 'No description provided' }}</span>
-        </div>
-
-        <div class="detail-row">
-          <span class="detail-label">Transaction ID:</span>
-          <span class="detail-value">{{ payment.transactionId || 'N/A' }}</span>
-        </div>
+      <div class="page-size-selector" *ngIf="payments.length > 0">
+        <label for="pageSize">Items per page:</label>
+        <select id="pageSize" [value]="pageSize" (change)="changePageSize($event)">
+          <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+        </select>
       </div>
     </div>
   </div>

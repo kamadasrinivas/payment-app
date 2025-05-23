@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { Payment } from './payment.service';
-
-export interface PaymentResponse {
-  success: boolean;
-  transactionId?: string;
-  message: string;
-}
+import { Payment, PaymentResponse } from './models/payment.model';
 
 @Injectable({
   providedIn: 'root'
