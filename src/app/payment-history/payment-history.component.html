@@ -1,0 +1,34 @@
+<div class="payment-history-container">
+  <h2>Payment History</h2>
+
+  <div *ngIf="payments.length === 0" class="no-payments">
+    <p>No payment history available.</p>
+    <button routerLink="/payment-form" class="make-payment-button">Make a Payment</button>
+  </div>
+
+  <div *ngIf="payments.length > 0" class="payments-list">
+    <div class="payment-card" *ngFor="let payment of payments">
+      <div class="payment-header">
+        <div class="payment-date">{{ payment.date | date:'medium' }}</div>
+        <div class="payment-amount">${{ payment.amount | number:'1.2-2' }}</div>
+      </div>
+
+      <div class="payment-details">
+        <div class="detail-row">
+          <span class="detail-label">Cardholder:</span>
+          <span class="detail-value">{{ payment.cardholderName }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Card Number:</span>
+          <span class="detail-value">{{ maskCardNumber(payment.cardNumber) }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Description:</span>
+          <span class="detail-value">{{ payment.description || 'No description provided' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

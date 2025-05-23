@@ -1,0 +1,98 @@
+.payment-history-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.no-payments {
+  text-align: center;
+  padding: 40px 0;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.no-payments p {
+  margin-bottom: 20px;
+  color: #7f8c8d;
+  font-size: 18px;
+}
+
+.make-payment-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.make-payment-button:hover {
+  background-color: #2980b9;
+}
+
+.payments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.payment-card {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3498db;
+  color: white;
+  padding: 15px;
+}
+
+.payment-date {
+  font-size: 14px;
+}
+
+.payment-amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.payment-details {
+  padding: 15px;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-label {
+  flex: 0 0 120px;
+  font-weight: bold;
+  color: #7f8c8d;
+}
+
+.detail-value {
+  flex: 1;
+  color: #2c3e50;
+}

@@ -1,0 +1,48 @@
+<div class="confirmation-container">
+  <div *ngIf="payment" class="confirmation-card">
+    <div class="confirmation-header">
+      <div class="check-icon">✓</div>
+      <h2>Payment Successful!</h2>
+      <p class="confirmation-message">Your payment has been processed successfully.</p>
+    </div>
+
+    <div class="payment-summary">
+      <h3>Payment Summary</h3>
+
+      <div class="summary-row">
+        <span class="summary-label">Amount:</span>
+        <span class="summary-value">${{ payment.amount | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span class="summary-label">Date:</span>
+        <span class="summary-value">{{ payment.date | date:'medium' }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span class="summary-label">Card:</span>
+        <span class="summary-value">{{ maskCardNumber(payment.cardNumber) }}</span>
+      </div>
+
+      <div *ngIf="payment.description" class="summary-row">
+        <span class="summary-label">Description:</span>
+        <span class="summary-value">{{ payment.description }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span class="summary-label">Transaction ID:</span>
+        <span class="summary-value">{{ payment.id }}</span>
+      </div>
+    </div>
+
+    <div class="confirmation-actions">
+      <button routerLink="/payment-form" class="action-button primary">Make Another Payment</button>
+      <button routerLink="/payment-history" class="action-button secondary">View Payment History</button>
+    </div>
+  </div>
+
+  <div *ngIf="!payment" class="no-payment-data">
+    <p>No payment information available.</p>
+    <button routerLink="/payment-form" class="action-button primary">Go to Payment Form</button>
+  </div>
+</div>
