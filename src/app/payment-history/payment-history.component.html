@@ -15,18 +15,47 @@
 
       <div class="payment-details">
         <div class="detail-row">
+          <span class="detail-label">Payment Method:</span>
+          <span class="detail-value">{{ getPaymentMethodName(payment.paymentMethod) }}</span>
+        </div>
+
+        <!-- Credit Card Details -->
+        <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
           <span class="detail-label">Cardholder:</span>
           <span class="detail-value">{{ payment.cardholderName }}</span>
         </div>
 
-        <div class="detail-row">
+        <div *ngIf="payment.paymentMethod === 'creditCard'" class="detail-row">
           <span class="detail-label">Card Number:</span>
           <span class="detail-value">{{ maskCardNumber(payment.cardNumber) }}</span>
+        </div>
+
+        <!-- PayPal Details -->
+        <div *ngIf="payment.paymentMethod === 'paypal'" class="detail-row">
+          <span class="detail-label">PayPal Email:</span>
+          <span class="detail-value">{{ payment.paypalEmail }}</span>
+        </div>
+
+        <!-- RazorPay Details -->
+        <div *ngIf="payment.paymentMethod === 'razorpay'" class="detail-row">
+          <span class="detail-label">RazorPay ID:</span>
+          <span class="detail-value">{{ payment.razorpayId }}</span>
+        </div>
+
+        <!-- Net Banking Details -->
+        <div *ngIf="payment.paymentMethod === 'netbanking'" class="detail-row">
+          <span class="detail-label">Bank:</span>
+          <span class="detail-value">{{ payment.bankName }}</span>
         </div>
 
         <div class="detail-row">
           <span class="detail-label">Description:</span>
           <span class="detail-value">{{ payment.description || 'No description provided' }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Transaction ID:</span>
+          <span class="detail-value">{{ payment.transactionId || 'N/A' }}</span>
         </div>
       </div>
     </div>

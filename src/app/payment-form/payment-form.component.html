@@ -2,36 +2,101 @@
   <h2>Make a Payment</h2>
 
   <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="cardholderName">Cardholder Name</label>
-      <input type="text" id="cardholderName" formControlName="cardholderName" placeholder="John Doe">
-      <div *ngIf="paymentForm.get('cardholderName')?.invalid && paymentForm.get('cardholderName')?.touched" class="error-message">
-        Cardholder name is required
+    <!-- Payment Method Selection -->
+    <div class="form-group payment-method-selection">
+      <label>Select Payment Method</label>
+      <div class="payment-methods">
+        <div *ngFor="let method of paymentMethods" class="payment-method-option">
+          <input type="radio"
+                 [id]="method.id"
+                 formControlName="paymentMethod"
+                 [value]="method.id">
+          <label [for]="method.id">{{ method.name }}</label>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="cardNumber">Card Number</label>
-      <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16" pattern="\d*" (input)="onCardNumberInput($event)">
-      <div *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched" class="error-message">
-        Valid card number is required (16 digits)
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group half-width">
-        <label for="expiryDate">Expiry Date</label>
-        <input type="text" id="expiryDate" formControlName="expiryDate" placeholder="MM/YY" maxlength="5" pattern="\d{2}\/\d{2}" (input)="onExpiryDateInput($event)">
-        <div *ngIf="paymentForm.get('expiryDate')?.invalid && paymentForm.get('expiryDate')?.touched" class="error-message">
-          Valid expiry date is required (MM/YY format)
+    <!-- Credit Card Payment Form -->
+    <div *ngIf="selectedPaymentMethod === 'creditCard'" class="payment-method-form">
+      <div class="form-group">
+        <label for="cardholderName">Cardholder Name</label>
+        <input type="text" id="cardholderName" formControlName="cardholderName" placeholder="John Doe">
+        <div *ngIf="paymentForm.get('cardholderName')?.invalid && paymentForm.get('cardholderName')?.touched" class="error-message">
+          Cardholder name is required
         </div>
       </div>
 
-      <div class="form-group half-width">
-        <label for="cvv">CVV</label>
-        <input type="text" id="cvv" formControlName="cvv" placeholder="123" maxlength="4" pattern="\d*" (input)="onCvvInput($event)">
-        <div *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched" class="error-message">
-          Valid CVV is required (3-4 digits)
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16" pattern="\d*" (input)="onCardNumberInput($event)">
+        <div *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched" class="error-message">
+          Valid card number is required (16 digits)
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label for="expiryDate">Expiry Date</label>
+          <input type="text" id="expiryDate" formControlName="expiryDate" placeholder="MM/YY" maxlength="5" pattern="\d{2}\/\d{2}" (input)="onExpiryDateInput($event)">
+          <div *ngIf="paymentForm.get('expiryDate')?.invalid && paymentForm.get('expiryDate')?.touched" class="error-message">
+            Valid expiry date is required (MM/YY format)
+          </div>
+        </div>
+
+        <div class="form-group half-width">
+          <label for="cvv">CVV</label>
+          <input type="text" id="cvv" formControlName="cvv" placeholder="123" maxlength="4" pattern="\d*" (input)="onCvvInput($event)">
+          <div *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched" class="error-message">
+            Valid CVV is required (3-4 digits)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PayPal Payment Form -->
+    <div *ngIf="selectedPaymentMethod === 'paypal'" class="payment-method-form">
+      <div class="form-group">
+        <label for="paypalEmail">PayPal Email</label>
+        <input type="email" id="paypalEmail" formControlName="paypalEmail" placeholder="your.email@example.com">
+        <div *ngIf="paymentForm.get('paypalEmail')?.invalid && paymentForm.get('paypalEmail')?.touched" class="error-message">
+          Valid PayPal email is required
+        </div>
+      </div>
+    </div>
+
+    <!-- RazorPay Payment Form -->
+    <div *ngIf="selectedPaymentMethod === 'razorpay'" class="payment-method-form">
+      <div class="form-group">
+        <label for="razorpayId">RazorPay ID</label>
+        <input type="text" id="razorpayId" formControlName="razorpayId" placeholder="rzp_xxxxxxxxxx">
+        <div *ngIf="paymentForm.get('razorpayId')?.invalid && paymentForm.get('razorpayId')?.touched" class="error-message">
+          Valid RazorPay ID is required
+        </div>
+      </div>
+    </div>
+
+    <!-- Net Banking Payment Form -->
+    <div *ngIf="selectedPaymentMethod === 'netbanking'" class="payment-method-form">
+      <div class="form-group">
+        <label for="bankName">Bank Name</label>
+        <select id="bankName" formControlName="bankName">
+          <option value="">Select Bank</option>
+          <option value="HDFC">HDFC Bank</option>
+          <option value="ICICI">ICICI Bank</option>
+          <option value="SBI">State Bank of India</option>
+          <option value="AXIS">Axis Bank</option>
+          <option value="KOTAK">Kotak Mahindra Bank</option>
+        </select>
+        <div *ngIf="paymentForm.get('bankName')?.invalid && paymentForm.get('bankName')?.touched" class="error-message">
+          Please select a bank
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="accountNumber">Account Number</label>
+        <input type="text" id="accountNumber" formControlName="accountNumber" placeholder="Account Number">
+        <div *ngIf="paymentForm.get('accountNumber')?.invalid && paymentForm.get('accountNumber')?.touched" class="error-message">
+          Valid account number is required (minimum 8 digits)
         </div>
       </div>
     </div>
@@ -52,6 +117,24 @@
       <textarea id="description" formControlName="description" placeholder="What is this payment for?"></textarea>
     </div>
 
-    <button type="submit" [disabled]="paymentForm.invalid" class="submit-button">Process Payment</button>
+    <!-- Payment status messages -->
+    <div *ngIf="isProcessing" class="status-message processing">
+      <div class="spinner"></div>
+      <p>Processing your payment...</p>
+    </div>
+
+    <div *ngIf="paymentSuccess" class="status-message success">
+      <p>Payment successful! Transaction ID: {{ paymentResponse?.transactionId }}</p>
+      <p>Redirecting to confirmation page...</p>
+    </div>
+
+    <div *ngIf="paymentError" class="status-message error">
+      <p>{{ paymentError }}</p>
+      <p>Please try again or use a different payment method.</p>
+    </div>
+
+    <button type="submit" [disabled]="paymentForm.invalid || isProcessing" class="submit-button">
+      {{ isProcessing ? 'Processing...' : 'Process Payment' }}
+    </button>
   </form>
 </div>

@@ -28,7 +28,17 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  maskCardNumber(cardNumber: string): string {
-    return this.paymentService.maskCardNumber(cardNumber);
+  maskCardNumber(cardNumber: string | undefined): string {
+    return this.paymentService.maskCardNumber(cardNumber || '');
+  }
+
+  getPaymentMethodName(paymentMethod: string): string {
+    switch (paymentMethod) {
+      case 'creditCard': return 'Credit Card';
+      case 'paypal': return 'PayPal';
+      case 'razorpay': return 'RazorPay';
+      case 'netbanking': return 'Net Banking';
+      default: return paymentMethod || 'Credit Card'; // Default for backward compatibility
+    }
   }
 }

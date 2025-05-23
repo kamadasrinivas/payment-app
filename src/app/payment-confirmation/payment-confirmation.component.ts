@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { PaymentService, Payment } from '../payment.service';
+import { PaymentResponse } from '../payment-gateway.service';
 
 @Component({
   selector: 'app-payment-confirmation',
@@ -12,6 +13,7 @@ import { PaymentService, Payment } from '../payment.service';
 })
 export class PaymentConfirmationComponent implements OnInit {
   payment: Payment | null = null;
+  paymentResponse: PaymentResponse | null = null;
 
   constructor(
     private router: Router,
@@ -20,14 +22,33 @@ export class PaymentConfirmationComponent implements OnInit {
 
   ngOnInit(): void {
     const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { payment: Payment } | undefined;
+    const state = navigation?.extras.state as {
+      payment: Payment;
+      response: PaymentResponse;
+    } | undefined;
 
-    if (state && state.payment) {
-      this.payment = state.payment;
+    if (state) {
+      if (state.payment) {
+        this.payment = state.payment;
+      }
+
+      if (state.response) {
+        this.paymentResponse = state.response;
+      }
     }
   }
 
-  maskCardNumber(cardNumber: string): string {
-    return this.paymentService.maskCardNumber(cardNumber);
+  maskCardNumber(cardNumber: string | undefined): string {
+    return this.paymentService.maskCardNumber(cardNumber || '');
+  }
+
+  getPaymentMethodName(paymentMethod: string): string {
+    switch (paymentMethod) {
+      case 'creditCard': return 'Credit Card';
+      case 'paypal': return 'PayPal';
+      case 'razorpay': return 'RazorPay';
+      case 'netbanking': return 'Net Banking';
+      default: return paymentMethod;
+    }
   }
 }

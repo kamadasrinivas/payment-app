@@ -1,15 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { PaymentGatewayService, PaymentResponse } from './payment-gateway.service';
 
 export interface Payment {
   id: string;
-  cardholderName: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
+  paymentMethod: string; // 'creditCard', 'paypal', 'razorpay', 'netbanking'
+  cardholderName?: string;
+  cardNumber?: string;
+  expiryDate?: string;
+  cvv?: string;
+  // PayPal specific fields
+  paypalEmail?: string;
+  // RazorPay specific fields
+  razorpayId?: string;
+  // NetBanking specific fields
+  bankName?: string;
+  accountNumber?: string;
+  // Common fields
   amount: number;
   description: string;
   date: Date;
+  transactionId?: string;
 }
 
 @Injectable({
@@ -19,7 +31,7 @@ export class PaymentService {
   private paymentsSubject = new BehaviorSubject<Payment[]>([]);
   payments$ = this.paymentsSubject.asObservable();
 
-  constructor() {
+  constructor(private paymentGatewayService: PaymentGatewayService) {
     // Load payments from localStorage if available
     const savedPayments = localStorage.getItem('payments');
     if (savedPayments) {
@@ -42,13 +54,31 @@ export class PaymentService {
     return this.payments$;
   }
 
-  processPayment(payment: Payment): void {
-    const currentPayments = this.paymentsSubject.value;
-    const updatedPayments = [...currentPayments, payment];
-    this.paymentsSubject.next(updatedPayments);
+  processPayment(payment: Payment): Observable<PaymentResponse> {
+    // Process payment through the payment gateway
+    return this.paymentGatewayService.processPayment(payment).pipe(
+      tap(response => {
+        if (response.success) {
+          // Add transaction ID to the payment
+          const processedPayment = {
+            ...payment,
+            transactionId: response.transactionId
+          };
 
-    // Save to localStorage
-    this.savePaymentsToLocalStorage(updatedPayments);
+          // Add to payment history
+          const currentPayments = this.paymentsSubject.value;
+          const updatedPayments = [...currentPayments, processedPayment];
+          this.paymentsSubject.next(updatedPayments);
+
+          // Save to localStorage
+          this.savePaymentsToLocalStorage(updatedPayments);
+        }
+      }),
+      catchError(error => {
+        console.error('Error processing payment', error);
+        return throwError(() => new Error('Payment processing failed. Please try again.'));
+      })
+    );
   }
 
   private savePaymentsToLocalStorage(payments: Payment[]): void {
@@ -60,7 +90,7 @@ export class PaymentService {
   }
 
   // Helper method to mask card number for display
-  maskCardNumber(cardNumber: string): string {
+  maskCardNumber(cardNumber: string | undefined): string {
     if (!cardNumber) return '';
     return '**** '.repeat(3) + cardNumber.slice(-4);
   }
